@@ -1,0 +1,88 @@
+<body>
+<h1>Greedy Algorithms: Knapsack Problem</h1>
+<link rel="stylesheet" href="index.css">
+<button id="dynamic-btn" onclick="dynamicCLICK()">DYNAMIC</button>
+<button id="greedy-btn" onclick="greedyCLICK()">GREEDY</button>
+<p id="endResult"></p>
+<script>
+values = Array.from({length: 70}, () => Math.floor(Math.random() * 40));
+weights = Array.from({length:70}, () => Math.floor(Math.random() * 40));
+//values = [ 60, 100, 120, 140,10, 50,30,160,140 ];
+//weights = [ 10, 20, 30 ];
+W = 50;
+n = values.length;
+lookup = new Map();
+
+function dynamicCLICK(){
+  //console.log("i am responsive");
+    var dynamicStart = Date.now();
+    dynamicKnapSack();
+    var dynamicDuration = Date.now() - dynamicStart;
+    
+    
+    let endResult = document.getElementById("endResult");
+    //message = "you made it";
+  message = "DYNAMIC: Knapsack value is " + dynamicKnapSack(W,weights, values,  n ) +" and took "+ dynamicDuration+ " milliseconds to run";;
+    endResult.textContent = message;
+}
+
+function greedyCLICK(){
+  //console.log("i am responsive and greedy");
+  var greedyStart = Date.now();
+    greedyKnapSack();
+    var greedyDuration = Date.now() - greedyStart;
+
+    let endResult = document.getElementById("endResult");
+    message = "GREEDY: Knapsack value is " + greedyKnapSack() +" and took "+ greedyDuration+ " milliseconds to run";;
+    endResult.textContent = message;
+}
+
+function greedyKnapSack(){
+  const knapSack = (values, weights, n, W) => {
+  if(W < 0){
+    return Number.MIN_SAFE_INTEGER;
+  }
+  if(n < 0 || W === 0){
+    return 0;
+  }
+  let include = values[n] + knapSack(values, weights, n - 1, W - weights[n]);
+  let exclude = knapSack(values, weights, n - 1, W);
+  return Math.max(include, exclude);
+}
+answer = knapSack(values, weights, values.length - 1, W);
+return answer;
+
+}
+
+
+function dynamicKnapSack(){
+    const knapSack = (values, weights, n, W, lookup) => {
+  if (W < 0) {
+    return Number.MIN_SAFE_INTEGER;
+  }
+ 0
+  if (n < 0 || W == 0) {
+    return 0;
+  }
+  const key = `${n}|${W}`;
+  if (!lookup.has(key)){
+    let include = values[n] + knapSack(values, weights, n - 1, W - weights[n], lookup);
+
+    let exclude = knapSack(values, weights, n - 1, W, lookup);
+
+    lookup.set(key, Math.max(include, exclude));
+  }
+
+  return lookup.get(key);
+}
+answer = knapSack(values, weights, n - 1, W, lookup);
+return answer;
+}
+
+
+
+
+</script>
+
+
+</body>
